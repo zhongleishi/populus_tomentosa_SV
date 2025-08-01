@@ -1,0 +1,131 @@
+### Rscript
+### BGLR
+```
+pheno <- read.table("traits.txt",header = T)
+library(data.table)
+imputed_snp <- fread("impute_HEI.raw")
+imputed_snp[1:10,1:10]
+imputed_snp <- imputed_snp[,-c(1,3,4,5,6)] 
+imputed_snp[1:10,1:10]
+#GBLUP
+library(BGLR)#加载BGLR包
+library(plyr)
+library(data.table)
+#计算程序的运行时间
+Beginning_time<-'t1'
+Ending_time<-'t2'
+t1<-proc.time()
+#输入数据
+#X <- read.csv("imputed_sv.csv")
+#标准化基因型矩阵
+x <- imputed_snp[,-1]
+X <- scale(x,center = TRUE,scale = TRUE)
+Y <- read.table("../traits.txt",header = T)
+#计算G矩阵
+G <- tcrossprod(X)/ncol(X)
+#参数设置：7:3或6:4
+nIter <- 5000 #1-20000
+burnIn <- 1000 #1-20000
+
+#10-fold cross validation
+folds <- 5
+y<-Y[,c(1)]#读取第一个表型
+n <- length(y)
+set.seed(2024) # 设定一个随机种子
+sets <- rep(1:10,round(length(y)/folds,digits = 0))
+sets <- sets[order(runif(nrow(X)))]
+
+#定义评价指标
+COR.CV <- rep(NA,times=(folds+1)) #皮尔逊相关系数
+MSE.CV <- rep(NA,times=(folds+1)) #绝对误差
+MAE.CV <- rep(NA,times=(folds+1)) #平均绝对误差
+RMSE.CV <- rep(NA,times=(folds+1)) #均方根误差
+yHatCV <- numeric() #定义应该变量来储存交叉验证结果
+
+#----------------------------------GBLUP------------------------------------#
+#创建空的结果列表
+# 设定重复次数
+n_repeats <- 1
+
+# 创建一个列表来储存每次重复的所有结果
+all_results <- vector("list", n_repeats)
+
+for (repeat_idx in 1:n_repeats) {
+  # 创建一个空的列表来储存每一折的结果
+  result_list <- vector("list", folds)
+  
+  for (fold in 1:folds) {
+    yNa <- y # 创建一个变量，将回归变量赋值给yNa
+    whichNa <- which(sets == fold) # 创建一个变量，用于储存交叉验证中的当前索引
+    yNa[whichNa] <- NA # 将当前索引位置的值设置为缺失
+    ETA <- list(list(K = G, model = 'RKHS')) # 创建一个列表
+    fm <- BGLR(y = yNa,
+               ETA = ETA,
+               nIter = nIter, # 贝叶斯迭代次数，MCMC
+               burnIn = burnIn, # 燃烧期的次数
+               saveAt = 'RHKS_') # 利用BGLR函数进行回归分析
+    
+    yHatCV[whichNa] <- fm$yHat[fm$whichNa] # 将交叉验证中当前折的预测值储存在定义好的变量中
+    COR.CV[fold] <- cor(fm$yHat[fm$whichNa], y[whichNa]) # 计算相关系数
+    MAE.CV[fold] <- mean(abs(fm$yHat[fm$whichNa] - y[whichNa])) # 计算MAE
+    MSE.CV[fold] <- mean((fm$yHat[fm$whichNa] - y[whichNa])^2) # 计算MSE
+    RMSE.CV[fold] <- sqrt(mean((fm$yHat[fm$whichNa] - y[whichNa])^2)) # 计算RMSE
+    
+    # 将每一折的结果储存在结果列表里
+    result_list[[fold]] <- list(
+      COR = COR.CV[fold],
+      MAE = MAE.CV[fold],
+      MSE = MSE.CV[fold],
+      RMSE = RMSE.CV[fold],
+      real_value = y[whichNa],
+      pred_value = fm$yHat[fm$whichNa]
+    )
+  }
+  
+  # 将每次重复的结果储存在列表中
+  all_results[[repeat_idx]] <- result_list
+}
+
+# 将所有结果合并为一个数据框
+combine_data <- data.frame()
+for (repeat_idx in 1:n_repeats) {
+  for (fold in 1:folds) {
+    real_value <- all_results[[repeat_idx]][[fold]]$real_value
+    pred_value <- all_results[[repeat_idx]][[fold]]$pred_value
+    fold_data <- data.frame(
+      Repeat = repeat_idx,
+      Fold = fold,
+      RealValue = real_value,
+      PredValue = pred_value
+    )
+    combine_data <- rbind(combine_data, fold_data)
+  }
+}
+
+##输出每一折的平均指标
+average_results <- data.frame(
+  Fold = 1:folds,
+  COR_Avg = numeric(folds),
+  MAE_Avg = numeric(folds),
+  MSE_Avg = numeric(folds),
+  RMSE_Avg = numeric(folds)
+)
+
+# 计算每一折的评价指标的平均值
+for (fold in 1:folds) {
+  # 提取每一折在所有重复中的评价指标
+  cor_values <- sapply(all_results, function(repeat_result) repeat_result[[fold]]$COR)
+  mae_values <- sapply(all_results, function(repeat_result) repeat_result[[fold]]$MAE)
+  mse_values <- sapply(all_results, function(repeat_result) repeat_result[[fold]]$MSE)
+  rmse_values <- sapply(all_results, function(repeat_result) repeat_result[[fold]]$RMSE)
+  
+  # 计算每一折的评价指标的平均值
+  average_results[fold, "COR_Avg"] <- mean(cor_values)
+  average_results[fold, "MAE_Avg"] <- mean(mae_values)
+  average_results[fold, "MSE_Avg"] <- mean(mse_values)
+  average_results[fold, "RMSE_Avg"] <- mean(rmse_values)
+}
+print(average_results)
+plot(average_results$Fold,average_results$COR_Avg)
+write.csv(average_results, "GBLUPsvgwas_average3.csv", row.names = FALSE)
+```
