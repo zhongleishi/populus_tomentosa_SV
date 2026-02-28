@@ -30,9 +30,7 @@ This document describes a standard GWAS procedure:
 ## Step 1 — Filter and convert VCF to PLINK
 
 ```bash
-plink --vcf all.vcf \
-  --geno 0.2 \
-  --maf 0.05 \
+plink --vcf all.missing_maf.recode.vcf \
   --recode vcf-iid \
   --allow-extra-chr \
   --const-fid \
