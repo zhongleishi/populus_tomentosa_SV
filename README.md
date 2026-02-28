@@ -1,32 +1,33 @@
-# populus_tomentosa_SV
+# Populus Tomentosa SV Analysis
 
-Populus Tomentosa SV 是关于研究和分析毛白杨（Populus tomentosa）中结构变异（SV）的项目。通过该项目可以识别、注释和可视化基因组中的结构变异，对毛白杨的基因功能和遗传变异有更全面的洞察。
+This repository contains the custom scripts used for identifying, annotating, and visualizing structural variations (SVs) in *Populus tomentosa*.
 
-## 项目特性
+## 1. System Requirements
+- **Operating System**: Linux (tested on Ubuntu 20.04/22.04) or macOS.
+- **Dependencies**: 
+  - Python (>= 3.8)
+  - R (>= 4.0)
+  - Bioinformatic tools: BWA, SAMtools, GATK, Manta and EMMAX
+  - Python libraries: pandas, numpy, matplotlib
+- **Full List of Software**: For a complete list of all software packages, versions, and specific parameters used in this study, please refer to the **"Material and Methods"** section of the manuscript.
 
-- **高效的结构变异识别：** 提供基于基因组序列的精确结构变异检测。
-- **注释支持：** 支持基于公共数据库和自定义注释的变异功能预测。
-- **数据可视化：** 提供变异相关的图表和分析结果展示。
+# 1.Genome analyses
 
 
 
-## 贡献指南
+# 2.Variant-calling
+Call_SNP
 
-如果您想为本项目做出贡献，请按照以下步骤：
-1. 提交 Issue 反馈问题或建议。
-2. Fork 仓库，开发您的功能。
-3. 创建 Pull Request 提交修改。
+Call_SV
 
-## 引用信息
 
-如果您在研究中使用了本项目，请参考以下引用格式：
+# 3.Population_genetics
 
-> unpublished data, GitHub地址: https://github.com/zhongleishi/populus_tomentosa_SV
+# 4.Local adaptation
 
-## 许可证
 
-本项目采用**[MIT License](LICENSE)**。详情请查看许可证文件。
 
-## 联系信息
+# 6.
 
-如有任何问题，请通过 [GitHub Issue](https://github.com/zhongleishi/populus_tomentosa_SV/issues) 或邮件 zhongleishi1026@1063.com 联系我们。
+## Citation
+If you use this code in your research, please cite:https://github.com/zhongleishi/populus_tomentosa_SV
