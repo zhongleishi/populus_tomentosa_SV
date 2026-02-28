@@ -1,33 +1,29 @@
-# Populus Tomentosa SV Analysis
+# populus_tomentosa_SV
 
-This repository contains the custom scripts used for identifying, annotating, and visualizing structural variations (SVs) in *Populus tomentosa*.
+Reproducible pipelines for structural variant (SV) discovery, population genetics, RNA-seq processing, GWAS, genomic prediction, genome assembly, and genome annotation in *Populus tomentosa*.
 
-## 1. System Requirements
-- **Operating System**: Linux (tested on Ubuntu 20.04/22.04) or macOS.
-- **Dependencies**: 
-  - Python (>= 3.8)
-  - R (>= 4.0)
-  - Bioinformatic tools: BWA, SAMtools, GATK, Manta and EMMAX
-  - Python libraries: pandas, numpy, matplotlib
-- **Full List of Software**: For a complete list of all software packages, versions, and specific parameters used in this study, please refer to the **"Material and Methods"** section of the manuscript.
+## Paper-ready / reproducible workflows (root docs)
 
-# 1.Genome analyses
+- **01** SV calling & population genotyping: `01_sv_calling.md`
+- **02** Population analysis (π / FST / XP-CLR / ADMIXTURE / PCA): `02_population_analysis.md`
+- **03** RNA-seq alignment (HISAT2 + SAMtools): `03_rnaseq_alignment.md`
+- **04** GWAS with GEMMA: `04_gwas_gemma.md`
+- **05** Genomic prediction with BGLR (R): `05_genomic_prediction_bglr.md`
+- **06** Genome assembly pipeline (includes runnable bash script): `06_genome_assembly_pipeline.md`
+- **07** Genome annotation pipeline (includes runnable bash script): `07_genome_annotation_pipeline.md`
 
-
-
-# 2.Variant-calling
-Call_SNP
-
-Call_SV
-
-
-# 3.Population_genetics
-
-# 4.Local adaptation
-
-
-
-# 6.
+## Reproducibility notes
+- Commands assume a Unix-like environment (Linux recommended).
+- Record exact input datasets and reference genome version used in your study.
+- Fix random seeds where applicable (e.g., cross-validation).
 
 ## Citation
-If you use this code in your research, please cite:https://github.com/zhongleishi/populus_tomentosa_SV
+If you use this repository, please cite:
+> unpublished data, GitHub: https://github.com/zhongleishi/populus_tomentosa_SV
+
+## License
+MIT License
+
+## Contact
+GitHub Issues: https://github.com/zhongleishi/populus_tomentosa_SV/issues  
+Email: zhongleishi1026@163.com
