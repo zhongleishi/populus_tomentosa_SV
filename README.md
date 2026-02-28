@@ -2,7 +2,7 @@
 
 Reproducible pipelines for structural variant (SV) discovery, population genetics, RNA-seq processing, GWAS, genomic prediction, genome assembly, and genome annotation in *Populus tomentosa*.
 
-## Paper-ready / reproducible workflows (root docs)
+## Paper-ready / reproducible workflows
 
 - **01** SV calling & population genotyping: `01_sv_calling.md`
 - **02** Population analysis (π / FST / XP-CLR / ADMIXTURE / PCA): `02_population_analysis.md`
