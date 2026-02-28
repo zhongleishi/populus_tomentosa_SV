@@ -20,7 +20,6 @@ This script implements genomic prediction using a kernel model in **BGLR** and e
 - CSV of average metrics: `GBLUPsvgwas_average3.csv`
 
 ---
----
 
 ## Step 1 — Convert VCF to raw
 
