@@ -358,3 +358,4 @@ tabix -p vcf cohort.indel.PASS.vcf.gz
 - `cohort.snp.vcf.gz`, `cohort.indel.vcf.gz`
 - `cohort.snp.hardfilter.vcf.gz`, `cohort.indel.hardfilter.vcf.gz`
 - `cohort.snp.PASS.vcf.gz`, `cohort.indel.PASS.vcf.gz`
+### We keep graphtyper.PASS.filtered.vcf.gz and cohort.snp.PASS.vcf.gz files. These two files serve as the foundational dataset for all subsequent filtering and population-level analyses. Refers to variants.vcf.
