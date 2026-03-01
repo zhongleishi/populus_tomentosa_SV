@@ -4,7 +4,7 @@ Reproducible pipelines for structural variant (SV) discovery, population genetic
 
 ## Paper-ready / reproducible workflows
 
-- **01** SV calling & population genotyping: `01_sv_calling.md`
+- **01** Variants calling & population genotyping: `01_variants_calling.md`
 - **02** Population analysis (π / FST / XP-CLR / ADMIXTURE / PCA): `02_population_analysis.md`
 - **03** RNA-seq alignment (HISAT2 + SAMtools): `03_rnaseq_alignment.md`
 - **04** GWAS with GEMMA: `04_gwas_gemma.md`
