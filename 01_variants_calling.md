@@ -344,4 +344,4 @@ tabix -p vcf pto302.indel.PASS.vcf.gz
 ---
 
 ## Outputs summary
-We keep graphtyper.PASS.filtered.vcf.gz and cohort.snp.PASS.vcf.gz files. These two files serve as the foundational dataset for all subsequent filtering and population-level analyses. Refers to variants.vcf.
+We keep pto302.graphtyper.svPASS.filter.vcf.gz and pto302.snp.PASS.vcf.gz files. These two files serve as the foundational dataset for all subsequent filtering and population-level analyses. Refers to variants.vcf.
