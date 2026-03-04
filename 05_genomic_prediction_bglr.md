@@ -24,7 +24,7 @@ This script implements genomic prediction using a kernel model in **BGLR** and e
 ## Step 1 — Convert VCF to raw
 
 ```bash
-plink --vcf all.missing_maf.recode.vcf \
+plink --vcf pto302.miss0.8_maf0.05.recode.vcf \
   --allow-extra-chr --recodeA \
   --out variants
 ```
