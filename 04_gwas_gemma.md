@@ -16,11 +16,11 @@ This document describes a standard GWAS procedure:
 ---
 
 ## Inputs
-- Genotypes (SV): `all.missing_maf.recode.vcf`
+- Genotypes (SV): `pto302.miss0.8_maf0.05.recode.vcf`
 - Phenotype file: (not shown in original commands; GEMMA requires phenotype in `.fam` or separate phenotype input depending on workflow)
 
 ## Outputs
-- PLINK binary files: `geno0.2maf0.05.*`
+- PLINK binary files: `pto302.miss0.8_maf0.05.*`
 - Kinship: `output/kin.sXX.txt`
 - Association result: `output/trait1_gemma_lmm4.assoc.txt`
 - Simplified summary: `trait1_gemma_lmm4`
@@ -30,13 +30,13 @@ This document describes a standard GWAS procedure:
 ## Step 1 — Filter and convert VCF to PLINK
 
 ```bash
-plink --vcf all.missing_maf.recode.vcf \
+plink --vcf pto302.miss0.8_maf0.05.recode.vcf \
   --recode vcf-iid \
   --allow-extra-chr \
   --const-fid \
   --threads 5 \
   --make-bed \
-  --out geno0.2maf0.05
+  --out pto302.miss0.8_maf0.05
 ```
 
 ---
@@ -44,7 +44,7 @@ plink --vcf all.missing_maf.recode.vcf \
 ## Step 2 — Compute kinship matrix (GEMMA)
 
 ```bash
-gemma -bfile geno0.2maf0.05 -gk 2 -o kin
+gemma -bfile pto302.miss0.8_maf0.05 -gk 2 -o kin
 ```
 
 - `-gk 2`: centered relatedness matrix
@@ -54,7 +54,7 @@ gemma -bfile geno0.2maf0.05 -gk 2 -o kin
 ## Step 3 — LMM association (example: trait1)
 
 ```bash
-gemma -bfile geno0.2maf0.05 -k output/kin.sXX.txt -lmm 4 -o trait1_gemma
+gemma -bfile pto302.miss0.8_maf0.05 -k output/kin.sXX.txt -lmm 4 -o trait1_gemma
 ```
 
 **Important**
