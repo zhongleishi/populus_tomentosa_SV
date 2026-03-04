@@ -16,6 +16,7 @@ Reproducible pipelines for structural variant (SV) discovery, population genetic
 - Commands assume a Unix-like environment (Linux recommended).
 - Record exact input datasets and reference genome version used in your study.
 - Fix random seeds where applicable (e.g., cross-validation).
+- Note on VCF naming: Population analysis and GS analyses were conducted using both SNP and SV simultaneously, so VCF filenames are not distinguished by SNP vs SV and use `pto302` as a placeholder. For GWAS, only SVs were considered.
 
 ## Citation
 If you use this repository, please cite:
