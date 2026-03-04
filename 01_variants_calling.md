@@ -34,7 +34,7 @@ This document provides a reproducible variant discovery workflow including:
 ### SNP/INDEL
 - bwa
 - samtools
-- GATK (4.x)
+- GATK (4.0)
 - bgzip/tabix (optional, for indexing vcf.gz)
 
 ---
@@ -120,7 +120,7 @@ svimmer --threads 60 vcf.list Chr01 Chr02 Chr03 Chr04 Chr05 Chr06 Chr07 Chr08 Ch
 Genotype SVs per chromosome (example Chr01):
 
 ```bash
-graphtyper genotype_sv genome.fasta sample_merged_sort.vcf.gz \
+graphtyper genotype_sv genome.fasta pto302_merged_sort.vcf.gz \
   --sams=bam.list \
   --region Chr01 \
   --threads 40
@@ -144,24 +144,24 @@ done > vcf_file_list
 Concatenate:
 
 ```bash
-bcftools concat --naive --file-list vcf_file_list -Oz -o graphtyper.all.vcf.gz
-tabix -p vcf graphtyper.all.vcf.gz
+bcftools concat --naive --file-list vcf_file_list -Oz -o pto302.graphtyper.sv.vcf.gz
+tabix -p vcf pto302.graphtyper.sv.vcf.gz
 ```
 
 PASS-only:
 
 ```bash
-bcftools view -f PASS -Oz -o graphtyper.PASS.vcf.gz graphtyper.all.vcf.gz
-tabix -p vcf graphtyper.PASS.vcf.gz
+bcftools view -f PASS -Oz -o pto302.graphtyper.svPASS.vcf.gz pto302.graphtyper.sv.vcf.gz
+tabix -p vcf pto302.graphtyper.svPASS.vcf.gz
 ```
 
 Optional SV-type filter (adjust to your VCF encoding):
 
 ```bash
-zcat graphtyper.PASS.vcf.gz \
+zcat pto302.graphtyper.svPASS.vcf.gz \
   | awk '/^#/ || ($5 ~ /AGGREGATED|INV/)' \
-  | bgzip -c > graphtyper.PASS.filtered.vcf.gz
-tabix -p vcf graphtyper.PASS.filtered.vcf.gz
+  | bgzip -c > pto302.graphtyper.svPASS.filter.vcf.gz
+tabix -p vcf pto302.graphtyper.svPASS.filter.vcf.gz
 ```
 
 ---
@@ -171,17 +171,16 @@ tabix -p vcf graphtyper.PASS.filtered.vcf.gz
 ## Step B0 — Reference preparation (建库)
 
 > Note: for GATK, the dictionary file name is typically derived from the FASTA prefix.
-> If your reference is `07.1316.genome.sorted.fasta`, the dict should be `07.1316.genome.sorted.dict`.
 
 ```bash
 # BWA index
-bwa index ref.fa
+bwa index genome.fasta
 
 # samtools faidx
-samtools faidx ref.fa
+samtools faidx genome.fasta
 
 # GATK sequence dictionary
-gatk CreateSequenceDictionary -R ref.fa -O ref.dict
+gatk CreateSequenceDictionary -R genome.fasta -O genome.dict
 ```
 
 ---
@@ -199,7 +198,7 @@ for i in `ls *.1.clean.fq.gz`; do
   m=${i/.1.clean.fq.gz/}
 
   # BWA read group: ID/SM use sample name; PL fixed as illumina
-  echo "bwa mem -t 10 -R \"@RG\\tID:${m}\\tPL:illumina\\tSM:${m}\" ref.fa ${m}.1.clean.fq.gz ${m}.2.clean.fq.gz \
+  echo "bwa mem -t 10 -R \"@RG\\tID:${m}\\tPL:illumina\\tSM:${m}\" genome.fasta ${m}.1.clean.fq.gz ${m}.2.clean.fq.gz \
     2> ${m}.bwa.log \
     | samtools view -bS -q 20 \
     | samtools sort -@ 5 -o ${m}.sorted.bam -"
@@ -239,7 +238,7 @@ for i in `ls *.sorted.markdup.bam`; do
   m=${i/.sorted.markdup.bam/}
 
   echo "gatk --java-options \"-Xmx40g -XX:ParallelGCThreads=4\" HaplotypeCaller \
-    -R ref.fa \
+    -R genome.fasta \
     -I ${i} \
     --emit-ref-confidence GVCF \
     -O ${m}.g.vcf.gz"
@@ -266,7 +265,7 @@ Then run:
 
 ```bash
 gatk CombineGVCFs \
-  -R ref.fa \
+  -R genome.fasta \
   --variant gvcf.list \
   -O cohort.g.vcf.gz
 ```
@@ -277,7 +276,7 @@ gatk CombineGVCFs \
 
 ```bash
 gatk GenotypeGVCFs \
-  -R ref.fa \
+  -R genome.fasta \
   -V cohort.g.vcf.gz \
   -O cohort.vcf.gz
 ```
@@ -316,7 +315,7 @@ gatk VariantFiltration \
   -filter "MQ < 40.0" --filter-name "MQ40" \
   -filter "MQRankSum < -12.5" --filter-name "MQRankSum-12.5" \
   -filter "ReadPosRankSum < -8.0" --filter-name "ReadPosRankSum-8" \
-  -O cohort.snp.hardfilter.vcf.gz
+  -O pto302.snp.hardfilter.vcf.gz
 ```
 
 ### INDEL hard filter
@@ -329,33 +328,20 @@ gatk VariantFiltration \
   -filter "SOR > 10.0" --filter-name "SOR10" \
   -filter "MQRankSum < -12.5" --filter-name "MQRankSum-12.5" \
   -filter "ReadPosRankSum < -8.0" --filter-name "ReadPosRankSum-8" \
-  -O cohort.indel.hardfilter.vcf.gz
+  -O pto302.indel.hardfilter.vcf.gz
 ```
 
 ### (Optional) extract PASS-only variants
 
 ```bash
-bcftools view -f PASS -Oz -o cohort.snp.PASS.vcf.gz cohort.snp.hardfilter.vcf.gz
-bcftools view -f PASS -Oz -o cohort.indel.PASS.vcf.gz cohort.indel.hardfilter.vcf.gz
+bcftools view -f PASS -Oz -o pto302.snp.PASS.vcf.gz pto302.snp.hardfilter.vcf.gz
+bcftools view -f PASS -Oz -o pto302.indel.PASS.vcf.gz pto302.indel.hardfilter.vcf.gz
 
-tabix -p vcf cohort.snp.PASS.vcf.gz
-tabix -p vcf cohort.indel.PASS.vcf.gz
+tabix -p vcf pto302.snp.PASS.vcf.gz
+tabix -p vcf pto302.indel.PASS.vcf.gz
 ```
 
 ---
 
 ## Outputs summary
-
-### SV
-- `*.precise.vcf.gz` (per-sample)
-- `sample_merged_sort.vcf.gz` (svimmer merged)
-- `graphtyper.all.vcf.gz`, `graphtyper.PASS.vcf.gz`, `graphtyper.PASS.filtered.vcf.gz`
-
-### SNP/INDEL
-- `*.sorted.bam`, `*.sorted.markdup.bam`
-- `*.g.vcf.gz`
-- `cohort.g.vcf.gz`, `cohort.vcf.gz`
-- `cohort.snp.vcf.gz`, `cohort.indel.vcf.gz`
-- `cohort.snp.hardfilter.vcf.gz`, `cohort.indel.hardfilter.vcf.gz`
-- `cohort.snp.PASS.vcf.gz`, `cohort.indel.PASS.vcf.gz`
-### We keep graphtyper.PASS.filtered.vcf.gz and cohort.snp.PASS.vcf.gz files. These two files serve as the foundational dataset for all subsequent filtering and population-level analyses. Refers to variants.vcf.
+We keep graphtyper.PASS.filtered.vcf.gz and cohort.snp.PASS.vcf.gz files. These two files serve as the foundational dataset for all subsequent filtering and population-level analyses. Refers to variants.vcf.
