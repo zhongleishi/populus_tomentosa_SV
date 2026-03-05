@@ -32,7 +32,7 @@ tabix -p vcf beagle.Chr01.edit.vcf.gz
 ### 1.1 Single-file example
 
 ```bash
-plink --vcf "/home/share_data1/zhongls/manta/SNP/Recombination_rate/beagle.Chr19.edit.vcf.gz" \
+plink --vcf beagle.Chr01.edit.vcf.gz \
   --maf 0.05 \
   --geno 0.5 \
   --recode \
@@ -93,7 +93,7 @@ library(data.table)
 # type='bp' means windows are defined by physical distance (bp), not by SNP count
 
 snps <- vcf_windower(
-  "/home/share_data1/zhongls/manta/SNP/Recombination_rate/beagle.Chr01.edit.vcf.gz",
+  "beagle.Chr01.edit.vcf.gz",
   size = 1e4,
   type = "bp"
 )
@@ -184,7 +184,7 @@ Because the sign of MDS axes is arbitrary, we optionally multiply MDS1 by `-1` f
 ```r
 library(vegan)
 
-x_all <- readRDS("/home/share_data1/zhongls/manta/SNP/local_PCA/chr1/chr1.all.rds")
+x_all <- readRDS("/local_PCA/chr1/chr1.all.rds")
 
 # Optional: flip the sign of MDS1 (MDS direction is arbitrary)
 x_all[, 1] <- x_all[, 1] * -1
