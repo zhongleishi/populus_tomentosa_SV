@@ -11,6 +11,7 @@ Reproducible pipelines for structural variant (SV) discovery, population genetic
 - **05** Genomic prediction with BGLR (R): `05_genomic_prediction_bglr.md`
 - **06** Genome assembly pipeline (includes runnable bash script): `06_genome_assembly_pipeline.md`
 - **07** Genome annotation pipeline (includes runnable bash script): `07_genome_annotation_pipeline.md`
+- **08** localPCA (lostruct) for a single chromosome (Beagle-imputed SNP VCF): `08_localPCA_single_chromosome.md`
 
 ## Reproducibility notes
 - Commands assume a Unix-like environment (Linux recommended).
