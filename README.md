@@ -29,3 +29,6 @@ MIT License
 ## Contact
 GitHub Issues: https://github.com/zhongleishi/populus_tomentosa_SV/issues  
 Email: zhongleishi1026@163.com
+
+## DOI
+https://zenodo.org/badge/1030169027.svg
