@@ -31,4 +31,4 @@ GitHub Issues: https://github.com/zhongleishi/populus_tomentosa_SV/issues
 Email: zhongleishi1026@163.com
 
 ## DOI
-https://zenodo.org/badge/1030169027.svg
+<a href="https://doi.org/10.5281/zenodo.20371317"><img src="https://zenodo.org/badge/1030169027.svg" alt="DOI"></a>
