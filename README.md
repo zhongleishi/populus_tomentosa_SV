@@ -21,7 +21,7 @@ Reproducible pipelines for structural variant (SV) discovery, population genetic
 
 ## Citation
 If you use this repository, please cite:
-> unpublished data, GitHub: https://github.com/zhongleishi/populus_tomentosa_SV
+> Zhong, L., Zhang, D., Huang, R. et al. Mapping structural variants in Populus tomentosa reveals adaptive signatures and improves prediction of wood properties. Nat Commun 17, 7628 (2026). https://doi.org/10.1038/s41467-026-74508-9
 
 ## License
 MIT License
